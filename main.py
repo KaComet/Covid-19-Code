@@ -10,7 +10,6 @@ switch_state = False;
 def bad_button_callback(channel):
     time.sleep(0.05)
     print("Bad button was pushed!")
-    print("Good button was pushed!")
             
     BUZZER_REPETITIONS = 1
     BUZZER_DELAY = 0.001
