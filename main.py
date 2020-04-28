@@ -45,8 +45,8 @@ def bad_button_callback(channel):
     time.sleep(0.05)
     print("Bad button was pushed!")
             
-    BUZZER_REPETITIONS = 100
-    BUZZER_DELAY = 0.001
+    BUZZER_REPETITIONS = 75
+    BUZZER_DELAY = 0.0007
         
     for _ in range(BUZZER_REPETITIONS):
         for value in [True, False]:
@@ -61,8 +61,8 @@ def good_button_callback():
     time.sleep(0.05)
     print("Good button was pushed!")
             
-    BUZZER_REPETITIONS = 1
-    BUZZER_DELAY = 0.001
+    BUZZER_REPETITIONS = 75
+    BUZZER_DELAY = 0.0007
         
     for _ in range(BUZZER_REPETITIONS):
         for value in [True, False]:
@@ -79,11 +79,18 @@ def good_button_callback():
     
 GPIO.setwarnings(False) # Ignore warning for now
 GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
+
 GPIO.setup(good_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GB = ButtonHandler(good_pin, good_button_callback, edge='rising', bouncetime=100)
+GB = ButtonHandler(good_pin, good_button_callback, edge='rising', bouncetime=200)
 GB.start()
-GPIO.add_event_detect(good_pin, GPIO.RISING, callback=GB)
+
 GPIO.setup(bad_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+BB = ButtonHandler(bad_pin, good_button_callback, edge='rising', bouncetime=200)
+BB.start()
+
+GPIO.add_event_detect(good_pin, GPIO.RISING, callback=GB)
+GPIO.add_event_detect(bad_pin, GPIO.RISING, callback=BB)
+
 GPIO.setup(led_pin, GPIO.OUT)
 GPIO.setup(switch_pin, GPIO.OUT)
 GPIO.setup(buzzer_pin, GPIO.OUT)
