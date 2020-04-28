@@ -6,7 +6,7 @@ led_pin = 22
 buzzer_pin = 18
 switch_pin = 12
 bad_pin = 15
-good_in = 13
+good_pin = 13
 
 class ButtonHandler(threading.Thread):
     def __init__(self, pin, func, edge='both', bouncetime=200):
@@ -16,7 +16,6 @@ class ButtonHandler(threading.Thread):
         self.func = func
         self.pin = pin
         self.bouncetime = float(bouncetime)/1000
-        self.resultFunc
 
         self.lastpinval = GPIO.input(self.pin)
         self.lock = threading.Lock()
@@ -37,7 +36,7 @@ class ButtonHandler(threading.Thread):
                 ((pinval == 1 and self.lastpinval == 0) and
                  (self.edge in ['rising', 'both']))
         ):
-            self.func(*args)
+            self.func()
 
         self.lastpinval = pinval
         self.lock.release()
@@ -78,13 +77,12 @@ def good_button_callback():
         GPIO.output(led_pin, 1)
     
     
-GPIO.setup(good_input, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GB = ButtonHandler(good_input, real_cb, edge='rising', bouncetime=100, resultFunc=good_button_callback)
-GB.start()
-GPIO.add_event_detect(good_input, GPIO.RISING, callback=GB)
-    
 GPIO.setwarnings(False) # Ignore warning for now
 GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
+GPIO.setup(good_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GB = ButtonHandler(good_pin, good_button_callback, edge='rising', bouncetime=100)
+GB.start()
+GPIO.add_event_detect(good_pin, GPIO.RISING, callback=GB)
 GPIO.setup(bad_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(led_pin, GPIO.OUT)
 GPIO.setup(switch_pin, GPIO.OUT)
@@ -96,6 +94,5 @@ GPIO.output(switch_pin, 0)
 GPIO.output(led_pin, 0)
 
 GPIO.add_event_detect(bad_pin,GPIO.RISING,callback=bad_button_callback)
-GPIO.add_event_detect(good_in,GPIO.RISING,callback=good_button_callback)
 message = input("Press enter to quit\n\n")
 GPIO.cleanup() # Clean up
