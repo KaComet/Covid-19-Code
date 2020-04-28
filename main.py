@@ -41,7 +41,7 @@ class ButtonHandler(threading.Thread):
         self.lastpinval = pinval
         self.lock.release()
 
-def bad_button_callback(channel):
+def bad_button_callback():
     time.sleep(0.05)
     print("Bad button was pushed!")
             
@@ -81,11 +81,11 @@ GPIO.setwarnings(False) # Ignore warning for now
 GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
 
 GPIO.setup(good_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GB = ButtonHandler(good_pin, good_button_callback, edge='rising', bouncetime=200)
+GB = ButtonHandler(good_pin, good_button_callback, edge='rising', bouncetime=100)
 GB.start()
 
 GPIO.setup(bad_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-BB = ButtonHandler(bad_pin, good_button_callback, edge='rising', bouncetime=200)
+BB = ButtonHandler(bad_pin, bad_button_callback, edge='rising', bouncetime=100)
 BB.start()
 
 GPIO.add_event_detect(good_pin, GPIO.RISING, callback=GB)
@@ -100,6 +100,5 @@ GPIO.setup(buzzer_pin, GPIO.OUT)
 GPIO.output(switch_pin, 0)
 GPIO.output(led_pin, 0)
 
-GPIO.add_event_detect(bad_pin,GPIO.RISING,callback=bad_button_callback)
 message = input("Press enter to quit\n\n")
 GPIO.cleanup() # Clean up
