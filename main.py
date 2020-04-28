@@ -1,14 +1,4 @@
-# /etc/init.d/main.py
-### BEGIN INIT INFO
-# Provides:          sample.py
-# Required-Start:    $remote_fs $syslog
-# Required-Stop:     $remote_fs $syslog
-# Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
-# Short-Description: Start daemon at boot time
-# Description:       Enable service provided by daemon.
-### END INIT INFO
-
+#! /usr/bin/env python3
 import RPi.GPIO as GPIO # Import Raspberry Pi GPIO library
 import time
 import threading
@@ -65,7 +55,7 @@ def bad_button_callback():
             time.sleep(BUZZER_DELAY)
         time.sleep(BUZZER_DELAY)
         
-    GPIO.output(switch_pin, 0)
+    GPIO.output(switch_pin, 1)
     GPIO.output(led_pin, 0)
 
 def good_button_callback():
@@ -80,11 +70,11 @@ def good_button_callback():
             GPIO.output(buzzer_pin, value)
             time.sleep(BUZZER_DELAY)
         time.sleep(BUZZER_DELAY)
-    if (GPIO.input(switch_pin) == True):
-        GPIO.output(switch_pin, 0)
+    if (GPIO.input(switch_pin) == False):
+        GPIO.output(switch_pin, 1)
         GPIO.output(led_pin, 0)
     else:
-        GPIO.output(switch_pin, 1)
+        GPIO.output(switch_pin, 0)
         GPIO.output(led_pin, 1)
     
     
@@ -108,7 +98,7 @@ GPIO.setup(buzzer_pin, GPIO.OUT)
 
 
 
-GPIO.output(switch_pin, 0)
+GPIO.output(switch_pin, 1)
 GPIO.output(led_pin, 0)
 
 message = input("Press enter to quit\n\n")
