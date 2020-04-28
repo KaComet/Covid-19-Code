@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO # Import Raspberry Pi GPIO library
+import time
 
 led_pin = 22
 buzzer_pin = 18
