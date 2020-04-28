@@ -1,11 +1,46 @@
 import RPi.GPIO as GPIO # Import Raspberry Pi GPIO library
 import time
+import threading
 
 led_pin = 22
 buzzer_pin = 18
 switch_pin = 12
 bad_pin = 15
 good_in = 13
+
+class ButtonHandler(threading.Thread):
+    def __init__(self, pin, func, edge='both', bouncetime=200):
+        super().__init__(daemon=True)
+
+        self.edge = edge
+        self.func = func
+        self.pin = pin
+        self.bouncetime = float(bouncetime)/1000
+        self.resultFunc
+
+        self.lastpinval = GPIO.input(self.pin)
+        self.lock = threading.Lock()
+
+    def __call__(self, *args):
+        if not self.lock.acquire(blocking=False):
+            return
+
+        t = threading.Timer(self.bouncetime, self.read, args=args)
+        t.start()
+
+    def read(self, *args):
+        pinval = GPIO.input(self.pin)
+
+        if (
+                ((pinval == 0 and self.lastpinval == 1) and
+                 (self.edge in ['falling', 'both'])) or
+                ((pinval == 1 and self.lastpinval == 0) and
+                 (self.edge in ['rising', 'both']))
+        ):
+            self.func(*args)
+
+        self.lastpinval = pinval
+        self.lock.release()
 
 def bad_button_callback(channel):
     time.sleep(0.05)
@@ -23,7 +58,7 @@ def bad_button_callback(channel):
     GPIO.output(switch_pin, 0)
     GPIO.output(led_pin, 0)
 
-def good_button_callback(channel):
+def good_button_callback():
     time.sleep(0.05)
     print("Good button was pushed!")
             
@@ -43,10 +78,14 @@ def good_button_callback(channel):
         GPIO.output(led_pin, 1)
     
     
+GPIO.setup(good_input, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GB = ButtonHandler(good_input, real_cb, edge='rising', bouncetime=100, resultFunc=good_button_callback)
+GB.start()
+GPIO.add_event_detect(good_input, GPIO.RISING, callback=GB)
+    
 GPIO.setwarnings(False) # Ignore warning for now
 GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
 GPIO.setup(bad_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(good_in, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(led_pin, GPIO.OUT)
 GPIO.setup(switch_pin, GPIO.OUT)
 GPIO.setup(buzzer_pin, GPIO.OUT)
