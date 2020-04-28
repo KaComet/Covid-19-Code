@@ -50,9 +50,15 @@ def good_button_callback(channel):
     
 GPIO.setwarnings(False) # Ignore warning for now
 GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
-GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.add_event_detect(23,GPIO.RISING,callback=bad_button_callback)
-GPIO.add_event_detect(24,GPIO.RISING,callback=good_button_callback)
+GPIO.setup(bad_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(good_in, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(led_pin, GPIO.OUT)
+GPIO.setup(switch_pin, GPIO.OUT)
+
+GPIO.output(switch_pin, 0)
+GPIO.output(led_pin, 0)
+
+GPIO.add_event_detect(bad_pin,GPIO.RISING,callback=bad_button_callback)
+GPIO.add_event_detect(good_in,GPIO.RISING,callback=good_button_callback)
 message = input("Press enter to quit\n\n")
 GPIO.cleanup() # Clean up
