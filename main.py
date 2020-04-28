@@ -11,15 +11,14 @@ def bad_button_callback(channel):
     time.sleep(0.05)
     print("Bad button was pushed!")
             
-    BUZZER_REPETITIONS = 1
+    BUZZER_REPETITIONS = 100
     BUZZER_DELAY = 0.001
-    PAUSE_TIME = 1
         
     for _ in range(BUZZER_REPETITIONS):
         for value in [True, False]:
             GPIO.output(buzzer_pin, value)
             time.sleep(BUZZER_DELAY)
-        time.sleep(PAUSE_TIME)
+        time.sleep(BUZZER_DELAY)
         
     GPIO.output(switch_pin, 0)
     GPIO.output(led_pin, 0)
@@ -30,14 +29,13 @@ def good_button_callback(channel):
             
     BUZZER_REPETITIONS = 1
     BUZZER_DELAY = 0.001
-    PAUSE_TIME = 1
         
     for _ in range(BUZZER_REPETITIONS):
         for value in [True, False]:
             GPIO.output(buzzer_pin, value)
             time.sleep(BUZZER_DELAY)
-        time.sleep(PAUSE_TIME)
-    if (GPIO.input(switch_pin) == true):
+        time.sleep(BUZZER_DELAY)
+    if (GPIO.input(switch_pin) == True):
         GPIO.output(switch_pin, 0)
         GPIO.output(led_pin, 0)
     else:
@@ -51,6 +49,9 @@ GPIO.setup(bad_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(good_in, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(led_pin, GPIO.OUT)
 GPIO.setup(switch_pin, GPIO.OUT)
+GPIO.setup(buzzer_pin, GPIO.OUT)
+
+
 
 GPIO.output(switch_pin, 0)
 GPIO.output(led_pin, 0)
