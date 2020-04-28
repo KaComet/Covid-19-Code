@@ -2,9 +2,9 @@ import RPi.GPIO as GPIO # Import Raspberry Pi GPIO library
 
 led_pin = 22
 buzzer_pin = 18
-switch_pin = 12
-bad_pin = 15
-good_in = 13
+switch_pin = 25
+bad_pin = 23
+good_in = 24
 switch_state = False;
 
 def bad_button_callback(channel):
