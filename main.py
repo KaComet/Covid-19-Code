@@ -16,7 +16,7 @@ def bad_button_callback(channel):
     BUZZER_DELAY = 0.001
     PAUSE_TIME = 1
         
-    for _ in xrange(BUZZER_REPETITIONS):
+    for _ in range(BUZZER_REPETITIONS):
         for value in [True, False]:
             GPIO.output(buzzer_pin, value)
             time.sleep(BUZZER_DELAY)
@@ -34,7 +34,7 @@ def good_button_callback(channel):
     BUZZER_DELAY = 0.001
     PAUSE_TIME = 1
         
-    for _ in xrange(BUZZER_REPETITIONS):
+    for _ in range(BUZZER_REPETITIONS):
         for value in [True, False]:
             GPIO.output(buzzer_pin, value)
             time.sleep(BUZZER_DELAY)
