@@ -6,7 +6,6 @@ buzzer_pin = 18
 switch_pin = 12
 bad_pin = 15
 good_in = 13
-switch_state = False;
 
 def bad_button_callback(channel):
     time.sleep(0.05)
@@ -24,7 +23,6 @@ def bad_button_callback(channel):
         
     GPIO.output(switch_pin, 0)
     GPIO.output(led_pin, 0)
-    switch_state = False
 
 def good_button_callback(channel):
     time.sleep(0.05)
@@ -39,14 +37,12 @@ def good_button_callback(channel):
             GPIO.output(buzzer_pin, value)
             time.sleep(BUZZER_DELAY)
         time.sleep(PAUSE_TIME)
-    if (switch_state == true):
+    if (GPIO.input(switch_pin) == true):
         GPIO.output(switch_pin, 0)
         GPIO.output(led_pin, 0)
-        switch_state = False
     else:
         GPIO.output(switch_pin, 1)
         GPIO.output(led_pin, 1)
-        switch_state = True
     
     
 GPIO.setwarnings(False) # Ignore warning for now
